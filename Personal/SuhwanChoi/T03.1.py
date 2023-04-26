@@ -97,8 +97,10 @@ for i in range(N - 1):
     T = T.reshape((alpha * sigma[i], -1))
     U, S, VT = torch.linalg.svd(T, full_matrices=False)
     # Caution: SVD of matrix is not unique.
-    # e.g. for orthogonal matrix R(RR^T=I), A = U S V^T = (UR^T) (RSR^T) (RV^T)
-    # spectral values are given nonnegative in pytorch and numpy.
+    # especially, spectral values are given **nonnegative** in pytorch and numpy.
+    # SVD is given by eigendecomposition of A^T A, which is positive semidefinite, which gives nonnegative eigenvalues.
+    # singular value is square root of eigenvalues of A^T A
+    # Spectral values may not be nonnegative in other variants of SVD(randomized SVD, ...)
     idx = S < eps
     U = U[:, ~idx]
     S = S[~idx]
